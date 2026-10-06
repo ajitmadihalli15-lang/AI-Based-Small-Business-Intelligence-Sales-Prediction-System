@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Small Business AI Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="sidebar">
+
+        <h2>Business AI</h2>
+
+        <p>📊 Dashboard</p>
+        <p>📈 Sales Analysis</p>
+        <p>🤖 AI Prediction</p>
+        <p>💡 Recommendations</p>
+
+    </div>
+
+
+    <div class="main">
+
+        <h1>AI Business Intelligence Dashboard</h1>
+
+        <p class="subtitle">
+            Small Business Sales Analytics & Prediction
+        </p>
+
+
+        <!-- KPI CARDS -->
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Total Revenue</h3>
+                <h2>₹{{ "{:,.2f}".format(total_sales) }}</h2>
+            </div>
+
+            <div class="card">
+                <h3>Total Orders</h3>
+                <h2>{{ total_orders }}</h2>
+            </div>
+
+            <div class="card">
+                <h3>Quantity Sold</h3>
+                <h2>{{ total_quantity }}</h2>
+            </div>
+
+            <div class="card">
+                <h3>Best Product</h3>
+                <h2>{{ best_product }}</h2>
+            </div>
+
+        </div>
+
+
+        <!-- AI PREDICTION -->
+
+        <div class="prediction">
+
+            <h2>🤖 AI Sales Prediction</h2>
+
+            <p>
+                Predicted next-day sales:
+            </p>
+
+            <h1>
+                ₹{{ "{:,.2f}".format(predicted_sales) }}
+            </h1>
+
+        </div>
+
+
+        <!-- CHARTS -->
+
+        <div class="charts">
+
+            <div class="chart-box">
+
+                <h2>📈 Sales Trend</h2>
+
+                <canvas id="salesChart"></canvas>
+
+            </div>
+
+
+            <div class="chart-box">
+
+                <h2>📊 Product Sales</h2>
+
+                <canvas id="productChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- BUSINESS INSIGHTS -->
+
+        <div class="insights">
+
+            <h2>💡 Business Insights</h2>
+
+            <p>
+                Your best-selling product is
+                <strong>{{ best_product }}</strong>.
+            </p>
+
+            <p>
+                Average sales per order:
+                <strong>
+                    ₹{{ "{:,.2f}".format(average_sales) }}
+                </strong>
+            </p>
+
+            <p>
+                Recommendation:
+                Maintain sufficient inventory for
+                <strong>{{ best_product }}</strong>
+                and consider promotional campaigns
+                for other products.
+            </p>
+
+        </div>
+
+    </div>
+
+
+<script id="chart-data" type="application/json">
+    {{ {
+        "sales_dates": sales_dates,
+        "sales_values": sales_values,
+        "product_names": product_names,
+        "product_values": product_values
+    } | tojson }}
+</script>
+
+<script>
+
+    // Sales Trend Chart
+
+    const chartData = JSON.parse(document.getElementById("chart-data").textContent);
+    const salesDates = chartData.sales_dates;
+    const salesValues = chartData.sales_values;
+
+    new Chart(
+        document.getElementById("salesChart"),
+        {
+            type: "line",
+
+            data: {
+
+                labels: salesDates,
+
+                datasets: [{
+
+                    label: "Sales",
+
+                    data: salesValues,
+
+                    borderWidth: 3,
+
+                    fill: false
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                plugins: {
+
+                    legend: {
+                        display: true
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+
+    // Product Sales Chart
+
+    const productNames = chartData.product_names;
+    const productValues = chartData.product_values;
+
+    new Chart(
+        document.getElementById("productChart"),
+        {
+
+            type: "bar",
+
+            data: {
+
+                labels: productNames,
+
+                datasets: [{
+
+                    label: "Sales",
+
+                    data: productValues,
+
+                    borderWidth: 1
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                plugins: {
+
+                    legend: {
+                        display: true
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>
